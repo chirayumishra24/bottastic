@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap');
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Circuit board background pattern */
+.circuit-bg {
+  background-color: #0a0e17;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+    linear-gradient(rgba(0, 255, 200, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 200, 0.04) 1px, transparent 1px);
+  background-size: 100vw 100vh, 40px 40px, 40px 40px;
+}
+
+.circuit-bg-light {
+  background-color: #f0f4f8;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 60%),
+    linear-gradient(rgba(30, 60, 120, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 60, 120, 0.05) 1px, transparent 1px);
+  background-size: 100vw 100vh, 40px 40px, 40px 40px;
+}
+
+/* Neon glow effects */
+.neon-glow {
+  box-shadow: 0 0 5px rgba(0, 255, 200, 0.3), 0 0 20px rgba(0, 255, 200, 0.1);
+}
+
+.neon-glow-cyan {
+  box-shadow: 0 0 8px rgba(0, 200, 255, 0.4), 0 0 25px rgba(0, 200, 255, 0.15);
+}
+
+.neon-text {
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.5), 0 0 30px rgba(0, 255, 200, 0.2);
+}
+
+/* Scanline overlay */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 200, 0.015) 2px,
+    rgba(0, 255, 200, 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Tech border */
+.tech-border {
+  border: 1px solid rgba(0, 255, 200, 0.2);
+  position: relative;
+}
+
+.tech-border::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 200, 0.5), transparent);
+}
+
+/* Metallic card */
+.robo-card {
+  background: linear-gradient(135deg, #0f1923 0%, #142233 50%, #0f1923 100%);
+  border: 1px solid rgba(0, 255, 200, 0.15);
+}
+
+.robo-card-light {
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 50%, #f0f4f8 100%);
+  border: 1px solid rgba(30, 60, 120, 0.15);
+}
+
+/* Pulsing dot indicator */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Floating particles */
+@keyframes float-up {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+.particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  animation: float-up linear infinite;
+}
+
+/* Streak fire animation */
+@keyframes streak-fire {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.2); filter: brightness(1.4); }
+}
+
+.streak-fire {
+  animation: streak-fire 0.5s ease-in-out infinite;
+}
+
+/* Bounce-in animation */
+@keyframes bounce-in {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.15); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.bounce-in {
+  animation: bounce-in 0.5s ease-out;
+}
+
+/* Wiggle animation */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+.wiggle:hover {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+/* Rainbow text glow for special moments */
+@keyframes rainbow-glow {
+  0% { text-shadow: 0 0 10px #ff0080, 0 0 20px #ff0080; }
+  25% { text-shadow: 0 0 10px #00ff80, 0 0 20px #00ff80; }
+  50% { text-shadow: 0 0 10px #0080ff, 0 0 20px #0080ff; }
+  75% { text-shadow: 0 0 10px #ff8000, 0 0 20px #ff8000; }
+  100% { text-shadow: 0 0 10px #ff0080, 0 0 20px #ff0080; }
+}
+
+.rainbow-glow {
+  animation: rainbow-glow 3s linear infinite;
+}
+
+/* XP bar shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.xp-bar-shimmer {
+  background: linear-gradient(90deg, #06b6d4, #10b981, #f59e0b, #06b6d4);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Warm accent colors for fun elements */
+.warm-glow-orange {
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.4), 0 0 25px rgba(249, 115, 22, 0.15);
+}
+
+.warm-glow-yellow {
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.4), 0 0 25px rgba(234, 179, 8, 0.15);
+}
+
+.warm-glow-pink {
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.4), 0 0 25px rgba(236, 72, 153, 0.15);
+}
+
+/* Timer pulse */
+@keyframes timer-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+.timer-danger {
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+
+/* Combo text */
+@keyframes combo-pop {
+  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+  50% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.combo-pop {
+  animation: combo-pop 0.5s ease-out;
+}
+
+/* Click burst particle explosion */
+@keyframes click-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0);
+    opacity: 0;
+  }
+}
+
+.click-burst-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  animation: click-burst 0.6s ease-out forwards;
+}
+
+/* Glitch text effect */
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  2% { transform: translate(-2px, 1px); }
+  4% { transform: translate(2px, -1px); }
+  6% { transform: translate(-1px, -2px); }
+  8% { transform: translate(1px, 2px); }
+  10% { transform: translate(0); }
+}
+
+@keyframes glitch-color {
+  0%, 100% { text-shadow: 2px 0 #ff0080, -2px 0 #00ff80; }
+  25% { text-shadow: -2px 0 #ff0080, 2px 0 #00ff80; }
+  50% { text-shadow: 2px -1px #0080ff, -2px 1px #ff8000; }
+  75% { text-shadow: -1px 2px #ff0080, 1px -2px #00ff80; }
+}
+
+.glitch-text {
+  animation: glitch 3s linear infinite, glitch-color 3s linear infinite;
+}
+
+.glitch-text:hover {
+  animation: glitch 0.3s linear infinite, glitch-color 0.3s linear infinite;
+}
+
+/* Typewriter cursor blink */
+@keyframes cursor-blink {
+  0%, 100% { border-right-color: transparent; }
+  50% { border-right-color: currentColor; }
+}
+
+.typewriter-cursor {
+  border-right: 2px solid;
+  animation: cursor-blink 0.8s step-end infinite;
+  padding-right: 2px;
+}
+
+/* Floating glow orbs */
+@keyframes float-orb {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+  50% { transform: translateY(-30px) scale(1.2); opacity: 0.6; }
+}
+
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: 0;
+  animation: float-orb ease-in-out infinite;
+}
+
+/* Pulse ring animation */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.8; box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+  50% { transform: scale(1); box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); }
+  100% { transform: scale(0.8); opacity: 0.8; box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
+/* Spin animation */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Hover lift */
+.hover-lift {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Konami code success flash */
+@keyframes konami-flash {
+  0%, 100% { background: transparent; }
+  10% { background: rgba(255, 0, 128, 0.15); }
+  30% { background: rgba(0, 255, 128, 0.15); }
+  50% { background: rgba(0, 128, 255, 0.15); }
+  70% { background: rgba(255, 128, 0, 0.15); }
+  90% { background: rgba(128, 0, 255, 0.15); }
+}
+
+.konami-flash {
+  animation: konami-flash 1s ease-out;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0e17;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #0a0e17;
+}
+::-webkit-scrollbar-thumb {
+  background: #00ffc8;
+  border-radius: 4px;
+}
+
+.drawing-canvas {
+  cursor: crosshair;
+  touch-action: none;
+}
