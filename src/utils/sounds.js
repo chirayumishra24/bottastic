@@ -83,3 +83,8 @@ export function playPop() {
 export function playType() {
   playTone(1200 + Math.random() * 400, 0.03, 'square', 0.03)
 }
+
+export function playSuccess() {
+  playTone(660, 0.1, 'sine', 0.1)
+  setTimeout(() => playTone(880, 0.2, 'sine', 0.15), 100)
+}
