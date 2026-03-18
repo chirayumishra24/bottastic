@@ -10,6 +10,23 @@ const observationPrompts = [
   { emoji: '🎮', text: 'What makes robots fun and engaging to use?' },
 ]
 
+const videoLessons = [
+  {
+    id: 'ttIOdAdQaUE',
+    title: 'What is Artificial Intelligence?',
+    source: 'The Dr Binocs Show | Peekaboo Kidz',
+    description: 'Learn how AI helps machines notice patterns, make decisions, and support people with useful tasks.',
+    focus: 'As you watch, think about how AI could help a school robot identify and return lost items.',
+  },
+  {
+    id: 'qmZMd3tNMWg',
+    title: 'Problem Solving Explained',
+    source: 'Kid-Friendly Problem Solving',
+    description: 'See how big challenges can be broken into smaller steps so inventors can build better solutions.',
+    focus: 'Notice the steps that could help you design a robot to solve the school lost-and-found problem.',
+  },
+]
+
 export default function WatchLearn() {
   const { watchReflections, setWatchReflection, setCurrentStep, darkMode, soundEnabled, addXP, unlockAchievement } = useStore()
   const xpGranted = useRef(false)
@@ -44,34 +61,70 @@ export default function WatchLearn() {
         </p>
       </motion.div>
 
-      {/* Video Placeholder */}
+      {/* Lesson Videos */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
-        className={`rounded-lg overflow-hidden mb-8 ${darkMode ? 'robo-card neon-glow' : 'robo-card-light shadow-lg'}`}
+        className="grid gap-6 mb-8 md:grid-cols-2"
       >
-        <div className={`aspect-video flex flex-col items-center justify-center text-white ${darkMode ? 'bg-gradient-to-br from-gray-900 via-cyan-950 to-gray-900' : 'bg-gradient-to-br from-cyan-700 to-emerald-700'}`}>
-          <motion.div
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="text-6xl mb-4"
+        {videoLessons.map((video, index) => (
+          <motion.article
+            key={video.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 + index * 0.1 }}
+            className={`overflow-hidden rounded-lg ${darkMode ? 'robo-card neon-glow' : 'robo-card-light shadow-lg'}`}
           >
-            🎬
-          </motion.div>
-          <h3 className="text-2xl font-bold mb-2">How Robots Help Us</h3>
-          <p className="text-sm opacity-80">Video content about robots in everyday life</p>
-          <div className="mt-4 flex gap-3">
-            <div className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-sm flex items-center gap-2 font-mono">
-              <span>▶</span> Watch Video
+            <div className="aspect-video overflow-hidden bg-black">
+              <iframe
+                className="h-full w-full"
+                src={`https://www.youtube.com/embed/${video.id}`}
+                title={video.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                loading="lazy"
+              />
             </div>
-          </div>
-        </div>
-        <div className="p-4">
-          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-            🎓 Watch this video and think about how robots could assist in schools, especially with managing lost items.
-          </p>
-        </div>
+            <div className="p-4 md:p-5">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] ${darkMode ? 'bg-cyan-500/10 text-cyan-300' : 'bg-cyan-100 text-cyan-700'}`}>
+                  Lesson {index + 1}
+                </span>
+                <a
+                  href={`https://youtu.be/${video.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-xs font-mono ${darkMode ? 'text-emerald-300 hover:text-emerald-200' : 'text-emerald-700 hover:text-emerald-900'}`}
+                >
+                  Open on YouTube ↗
+                </a>
+              </div>
+              <h3 className="text-xl font-bold mb-1">{video.title}</h3>
+              <p className={`text-xs font-mono uppercase tracking-[0.2em] mb-3 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                {video.source}
+              </p>
+              <p className={`text-sm leading-relaxed mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                {video.description}
+              </p>
+              <p className={`text-sm rounded-lg px-3 py-2 ${darkMode ? 'bg-gray-900/60 text-cyan-100 border border-cyan-500/10' : 'bg-cyan-50 text-cyan-900 border border-cyan-100'}`}>
+                {video.focus}
+              </p>
+            </div>
+          </motion.article>
+        ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.35 }}
+        className={`p-4 rounded-lg mb-8 ${darkMode ? 'robo-card' : 'robo-card-light shadow-md'}`}
+      >
+        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          🎓 Watch both videos and think about how smart technology and problem-solving steps could help a robot support your school, especially with managing lost items.
+        </p>
       </motion.div>
 
       {/* Observation Prompts */}
