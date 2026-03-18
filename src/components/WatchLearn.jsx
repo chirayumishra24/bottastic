@@ -13,18 +13,18 @@ const observationPrompts = [
 const videoLessons = [
   {
     id: 'ttIOdAdQaUE',
-    title: 'What is Artificial Intelligence?',
-    source: 'The Dr Binocs Show | Peekaboo Kidz',
-    description: 'Learn how AI helps machines notice patterns, make decisions, and support people with useful tasks.',
-    focus: 'As you watch, think about how AI could help a school robot identify and return lost items.',
+    title: 'How Robots Help Us',
+    source: 'YouTube',
+    description: 'Explore how robots are used in different areas of life and how they can help us in schools.',
+    focus: 'Watch and think about how robots could assist in schools, especially with managing lost items.'
   },
   {
     id: 'qmZMd3tNMWg',
-    title: 'Problem Solving Explained',
-    source: 'Kid-Friendly Problem Solving',
-    description: 'See how big challenges can be broken into smaller steps so inventors can build better solutions.',
-    focus: 'Notice the steps that could help you design a robot to solve the school lost-and-found problem.',
-  },
+    title: 'Robots in Everyday Life',
+    source: 'YouTube',
+    description: 'See examples of robots in action and how they solve real-world problems.',
+    focus: 'Notice the ways robots solve problems and how you might design a robot for your school.'
+  }
 ]
 
 export default function WatchLearn() {

@@ -11,6 +11,7 @@ export default function CursorTrail() {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
     const resize = () => {
       canvas.width = window.innerWidth
@@ -57,13 +58,14 @@ export default function CursorTrail() {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      particles.current = particles.current.filter(p => p.life > 0)
-
       for (const p of particles.current) {
         p.x += p.vx
         p.y += p.vy
         p.vy += 0.02 // slight gravity
-        p.life -= p.decay
+        p.life = Math.max(0, p.life - p.decay)
+        if (p.life <= 0) continue
+
+        const drawSize = Math.max(p.size * p.life, 0.1)
 
         ctx.globalAlpha = p.life * 0.8
         ctx.fillStyle = p.color
@@ -71,13 +73,15 @@ export default function CursorTrail() {
         ctx.shadowColor = p.color
 
         if (p.type === 'star') {
-          drawStar(ctx, p.x, p.y, p.size * p.life)
+          drawStar(ctx, p.x, p.y, drawSize)
         } else {
           ctx.beginPath()
-          ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2)
+          ctx.arc(p.x, p.y, drawSize, 0, Math.PI * 2)
           ctx.fill()
         }
       }
+
+      particles.current = particles.current.filter(p => p.life > 0)
       ctx.globalAlpha = 1
       ctx.shadowBlur = 0
 
