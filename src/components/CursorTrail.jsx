@@ -101,6 +101,7 @@ export default function CursorTrail() {
   return (
     <canvas
       ref={canvasRef}
+      data-html2canvas-ignore="true"
       style={{
         position: 'fixed',
         top: 0,

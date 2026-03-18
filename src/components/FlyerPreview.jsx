@@ -26,8 +26,15 @@ export default function FlyerPreview() {
 
   const exportFlyer = async () => {
     try {
+      if (document.fonts?.ready) await document.fonts.ready
       const html2canvas = (await import('html2canvas')).default
-      const canvas = await html2canvas(flyerRef.current, { scale: 2, backgroundColor: '#ffffff' })
+      const canvas = await html2canvas(flyerRef.current, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        logging: false,
+        useCORS: true,
+        ignoreElements: (element) => element.dataset.html2canvasIgnore === 'true',
+      })
       const link = document.createElement('a')
       link.download = `${robotData.name || 'robot'}-flyer.png`
       link.href = canvas.toDataURL()
@@ -40,8 +47,9 @@ export default function FlyerPreview() {
           triggerToast('Marketing Guru!', 'Exported your first robot flyer!', '\ud83d\udce4')
         }
       }
-    } catch {
-      alert('Export feature requires html2canvas. Please check your internet connection.')
+    } catch (error) {
+      console.error('Flyer export failed:', error)
+      alert('Flyer export could not finish. Please try again.')
     }
   }
 

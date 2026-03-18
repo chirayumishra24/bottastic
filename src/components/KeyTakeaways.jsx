@@ -21,9 +21,8 @@ const learningOutcomes = [
 ]
 
 export default function KeyTakeaways() {
-  const { setCurrentStep, darkMode, soundEnabled, addXP, xp, getLevel, unlockAchievement, achievements } = useStore()
+  const { setCurrentStep, darkMode, soundEnabled, addXP, xp, getLevel, unlockAchievement, achievements, robotData, teamInfo } = useStore()
   const xpGranted = useRef(false)
-  const reportRef = useRef(null)
   const [isExportingPdf, setIsExportingPdf] = useState(false)
   const [exportError, setExportError] = useState('')
 
@@ -54,48 +53,166 @@ export default function KeyTakeaways() {
   const achievementCount = Object.keys(achievements).length
 
   const exportAsPdf = async () => {
-    if (isExportingPdf || !reportRef.current) return
+    if (isExportingPdf) return
 
     setIsExportingPdf(true)
     setExportError('')
 
     try {
-      if (document.fonts?.ready) await document.fonts.ready
-
-      const html2canvas = (await import('html2canvas')).default
       const { jsPDF } = await import('jspdf')
-
-      const canvas = await html2canvas(reportRef.current, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        logging: false,
-        useCORS: true,
-      })
-
-      const imageData = canvas.toDataURL('image/png')
-      const pdf = new jsPDF('p', 'mm', 'a4')
+      const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' })
       const pageWidth = pdf.internal.pageSize.getWidth()
       const pageHeight = pdf.internal.pageSize.getHeight()
-      const imageWidth = pageWidth
-      const imageHeight = (canvas.height * imageWidth) / canvas.width
+      const margin = 16
+      const contentWidth = pageWidth - margin * 2
+      const summaryLines = [
+        robotData.name ? `Robot Name: ${robotData.name}` : null,
+        robotData.personality ? `Personality: ${robotData.personality}` : null,
+        robotData.tagline ? `Tagline: ${robotData.tagline}` : null,
+        teamInfo.name ? `Team: ${teamInfo.name}` : null,
+      ].filter(Boolean)
+      const exportDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
 
-      let heightLeft = imageHeight
-      let position = 0
+      let y = margin
 
-      pdf.addImage(imageData, 'PNG', 0, position, imageWidth, imageHeight)
-      heightLeft -= pageHeight
-
-      while (heightLeft > 0) {
-        position = heightLeft - imageHeight
+      const ensureSpace = (neededHeight = 10) => {
+        if (y + neededHeight <= pageHeight - margin) return
         pdf.addPage()
-        pdf.addImage(imageData, 'PNG', 0, position, imageWidth, imageHeight)
-        heightLeft -= pageHeight
+        y = margin
       }
+
+      const drawWrappedText = (text, options = {}) => {
+        const {
+          fontStyle = 'normal',
+          fontSize = 11,
+          color = [55, 65, 81],
+          indent = 0,
+          gapAfter = 3,
+          maxWidth = contentWidth - indent,
+        } = options
+
+        pdf.setFont('helvetica', fontStyle)
+        pdf.setFontSize(fontSize)
+        pdf.setTextColor(...color)
+
+        const lines = pdf.splitTextToSize(text, maxWidth)
+        const textHeight = pdf.getTextDimensions(lines).h
+        ensureSpace(textHeight + gapAfter)
+        pdf.text(lines, margin + indent, y)
+        y += textHeight + gapAfter
+      }
+
+      const drawSectionTitle = (title) => {
+        ensureSpace(12)
+        pdf.setFont('helvetica', 'bold')
+        pdf.setFontSize(15)
+        pdf.setTextColor(8, 145, 178)
+        pdf.text(title, margin, y)
+        y += 3
+        pdf.setDrawColor(103, 232, 249)
+        pdf.setLineWidth(0.4)
+        pdf.line(margin, y + 1.5, pageWidth - margin, y + 1.5)
+        y += 7
+      }
+
+      const drawInfoCard = (title, body) => {
+        pdf.setFont('helvetica', 'bold')
+        pdf.setFontSize(12)
+        const titleLines = pdf.splitTextToSize(title, contentWidth - 8)
+        const titleHeight = pdf.getTextDimensions(titleLines).h
+
+        pdf.setFont('helvetica', 'normal')
+        pdf.setFontSize(10.5)
+        const bodyLines = pdf.splitTextToSize(body, contentWidth - 8)
+        const bodyHeight = pdf.getTextDimensions(bodyLines).h
+        const cardHeight = titleHeight + bodyHeight + 10
+
+        ensureSpace(cardHeight + 4)
+        pdf.setFillColor(248, 250, 252)
+        pdf.setDrawColor(203, 213, 225)
+        pdf.roundedRect(margin, y, contentWidth, cardHeight, 3, 3, 'FD')
+
+        pdf.setFont('helvetica', 'bold')
+        pdf.setFontSize(12)
+        pdf.setTextColor(15, 23, 42)
+        pdf.text(titleLines, margin + 4, y + 6)
+
+        pdf.setFont('helvetica', 'normal')
+        pdf.setFontSize(10.5)
+        pdf.setTextColor(71, 85, 105)
+        pdf.text(bodyLines, margin + 4, y + 6 + titleHeight + 1)
+        y += cardHeight + 4
+      }
+
+      pdf.setFillColor(8, 145, 178)
+      pdf.roundedRect(margin, y, contentWidth, 26, 4, 4, 'F')
+      pdf.setFont('helvetica', 'bold')
+      pdf.setFontSize(20)
+      pdf.setTextColor(255, 255, 255)
+      pdf.text('Bot-tastic Final Report', margin + 5, y + 10)
+      pdf.setFont('helvetica', 'normal')
+      pdf.setFontSize(11)
+      pdf.text(`Knowledge Archive | Exported ${exportDate}`, margin + 5, y + 18)
+      y += 34
+
+      if (summaryLines.length > 0) {
+        drawSectionTitle('Project Snapshot')
+        summaryLines.forEach((line) => drawWrappedText(line))
+      }
+
+      drawSectionTitle('Core Takeaways')
+      takeaways.forEach((item, index) => {
+        drawWrappedText(`${index + 1}. ${item}`, { indent: 2, gapAfter: 2.5 })
+      })
+
+      drawSectionTitle('Skill Modules Unlocked')
+      learningOutcomes.forEach((item) => {
+        drawInfoCard(item.title, item.desc)
+      })
+
+      drawSectionTitle('Your Stats')
+      ensureSpace(28)
+      const statGap = 4
+      const statWidth = (contentWidth - statGap * 2) / 3
+      const statY = y
+      const statHeight = 24
+      const statCards = [
+        { label: 'Level', value: `${level.level} - ${level.name}` },
+        { label: 'Total XP', value: `${xp}` },
+        { label: 'Badges', value: `${achievementCount}` },
+      ]
+
+      statCards.forEach((stat, index) => {
+        const x = margin + index * (statWidth + statGap)
+        pdf.setFillColor(248, 250, 252)
+        pdf.setDrawColor(203, 213, 225)
+        pdf.roundedRect(x, statY, statWidth, statHeight, 3, 3, 'FD')
+        pdf.setFont('helvetica', 'bold')
+        pdf.setFontSize(10)
+        pdf.setTextColor(8, 145, 178)
+        pdf.text(stat.label, x + 3, statY + 7)
+        pdf.setFont('helvetica', 'bold')
+        pdf.setFontSize(12)
+        pdf.setTextColor(15, 23, 42)
+        const valueLines = pdf.splitTextToSize(stat.value, statWidth - 6)
+        pdf.text(valueLines, x + 3, statY + 15)
+      })
+      y += statHeight + 8
+
+      drawSectionTitle('Completion Status')
+      drawInfoCard(
+        'Mission Complete',
+        `Bot-tastic School Buddy Challenge completed successfully. You are now a certified ${level.name}. Keep building, testing, and sharing your ideas.`,
+      )
 
       pdf.save(`bot-tastic-final-report-level-${level.level}.pdf`)
     } catch (error) {
       console.error('PDF export failed:', error)
-      setExportError('PDF export could not finish. Please try again once the report is fully visible.')
+      setExportError('PDF export could not finish. Please try again.')
     } finally {
       setIsExportingPdf(false)
     }
@@ -103,7 +220,7 @@ export default function KeyTakeaways() {
 
   return (
     <div className="max-w-4xl mx-auto px-4">
-      <div ref={reportRef}>
+      <div>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

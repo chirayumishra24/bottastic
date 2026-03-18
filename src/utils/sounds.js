@@ -1,16 +1,59 @@
 // Web Audio API sound effects - no external files needed!
 let audioCtx = null
+let audioReady = false
+let unlockListenersAttached = false
+
+function canUseAudio() {
+  return typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext)
+}
+
+function removeUnlockListeners() {
+  if (!unlockListenersAttached || typeof window === 'undefined') return
+
+  window.removeEventListener('pointerdown', unlockAudio, true)
+  window.removeEventListener('keydown', unlockAudio, true)
+  window.removeEventListener('touchstart', unlockAudio, true)
+  unlockListenersAttached = false
+}
+
+async function unlockAudio() {
+  if (!canUseAudio()) return
+
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+    }
+
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume()
+    }
+
+    audioReady = audioCtx.state === 'running'
+    if (audioReady) removeUnlockListeners()
+  } catch {
+    audioReady = false
+  }
+}
+
+function ensureUnlockListeners() {
+  if (!canUseAudio() || unlockListenersAttached) return
+
+  window.addEventListener('pointerdown', unlockAudio, true)
+  window.addEventListener('keydown', unlockAudio, true)
+  window.addEventListener('touchstart', unlockAudio, true)
+  unlockListenersAttached = true
+}
 
 function getCtx() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)()
-  }
+  ensureUnlockListeners()
+  if (!audioCtx || !audioReady || audioCtx.state !== 'running') return null
   return audioCtx
 }
 
 function playTone(frequency, duration, type = 'sine', volume = 0.15) {
   try {
     const ctx = getCtx()
+    if (!ctx) return
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.type = type
@@ -56,6 +99,7 @@ export function playAchievement() {
 export function playWhoosh() {
   try {
     const ctx = getCtx()
+    if (!ctx) return
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.type = 'sine'
@@ -88,3 +132,5 @@ export function playSuccess() {
   playTone(660, 0.1, 'sine', 0.1)
   setTimeout(() => playTone(880, 0.2, 'sine', 0.15), 100)
 }
+
+ensureUnlockListeners()

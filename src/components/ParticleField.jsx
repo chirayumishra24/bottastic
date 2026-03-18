@@ -252,6 +252,7 @@ export default function ParticleField({ darkMode }) {
   return (
     <canvas
       ref={canvasRef}
+      data-html2canvas-ignore="true"
       className="fixed inset-0 z-0 pointer-events-none"
       style={{ opacity: darkMode ? 0.9 : 0.6 }}
     />

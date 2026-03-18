@@ -79,6 +79,7 @@ export default function MatrixRain({ darkMode }) {
   return (
     <canvas
       ref={canvasRef}
+      data-html2canvas-ignore="true"
       style={{
         position: 'fixed',
         top: 0,

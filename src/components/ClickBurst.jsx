@@ -48,6 +48,7 @@ export default function ClickBurst() {
   return (
     <div
       ref={containerRef}
+      data-html2canvas-ignore="true"
       style={{
         position: 'fixed',
         top: 0,
