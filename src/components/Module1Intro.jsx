@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import useStore from '../store'
-import { playClick, playPop } from '../utils/sounds'
-import { triggerToast } from './AchievementToast'
 import TechIcon from './TechIcon'
 
 const problemCards = [
@@ -27,21 +25,8 @@ const robotAbilities = [
 ]
 
 export default function Module1Intro() {
-  const { reflections, setReflection, setCurrentStep, darkMode, soundEnabled, addXP, unlockAchievement } = useStore()
+  const { setCurrentStep, darkMode } = useStore()
   const [selectedCard, setSelectedCard] = useState(null)
-  const reflectionXPGiven = useRef(false)
-
-  // Grant XP when all reflections are filled
-  useEffect(() => {
-    if (!reflectionXPGiven.current && reflections.lost && reflections.feel && reflections.easier) {
-      reflectionXPGiven.current = true
-      const leveled = addXP(8)
-      if (unlockAchievement('first-reflection')) {
-        triggerToast('Deep Thinker! 🧠', 'Completed your first reflection!', '📝')
-      }
-      if (leveled) triggerToast('LEVEL UP! 🎉', 'You reached a new rank!', '⬆️')
-    }
-  }, [reflections])
 
   return (
     <div className="max-w-4xl mx-auto px-4">
@@ -179,38 +164,6 @@ export default function Module1Intro() {
           ))}
         </div>
       </motion.div>
-
-      {/* Reflection Inputs */}
-      <div className={`p-6 rounded-lg mb-8 ${darkMode ? 'robo-card' : 'robo-card-light shadow-md'}`}>
-        <h3 className="text-xl font-bold mb-4">🔧 Reflection Protocol</h3>
-        <div className="space-y-4">
-          {[
-            { key: 'lost', label: 'Have you ever lost something at school? What was it?', options: ['Water bottle', 'Lunch box', 'Notebook', 'Eraser / Stationery', 'Bag / Jacket', 'Pencil case', 'Umbrella', 'Something else'] },
-            { key: 'feel', label: 'How did you feel when you lost it?', options: ['Sad 😢', 'Worried 😟', 'Frustrated 😤', 'Panicked 😰', 'Upset 😞', 'Confused 🤔', 'Angry 😠'] },
-            { key: 'easier', label: 'What could make returning lost items easier?', options: ['A smart tracking robot 🤖', 'Name tags on all items 🏷️', 'Lost & found alerts on phone 📱', 'Smart sensors in school 📡', 'A robot that announces found items 📢', 'Color-coded labels for classes 🎨'] },
-          ].map((q) => (
-            <div key={q.key}>
-              <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                {q.label}
-              </label>
-              <select
-                value={reflections[q.key]}
-                onChange={(e) => { setReflection(q.key, e.target.value); if (soundEnabled) playClick() }}
-                className={`w-full p-3 rounded-lg border-2 transition-colors ${
-                  darkMode
-                    ? 'bg-gray-900/50 border-cyan-500/20 focus:border-cyan-500 text-cyan-100'
-                    : 'bg-gray-50 border-gray-300 focus:border-cyan-500'
-                } outline-none font-mono cursor-pointer`}
-              >
-                <option value="">– Pick one –</option>
-                {q.options.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Navigation */}
       <div className="flex justify-between">

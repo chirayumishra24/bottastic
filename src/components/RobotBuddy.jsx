@@ -13,7 +13,7 @@ const buddyMessages = {
   1: [
     "Ooh, those stories are wild! Have you ever lost something? 🤔",
     "Tap the cards to read real student stories! 📖",
-    "Don't forget to write your reflections below! ✍️",
+    "Picture how a school robot could help return lost things faster! 🤖",
   ],
   2: [
     "Time to learn! Watch the video carefully... there might be quiz questions! 👀",
